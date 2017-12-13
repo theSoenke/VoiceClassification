@@ -8,4 +8,4 @@
 
 ## Run
 1. `export DATASET=~/Downloads/cv_corpus_v1`
-2. `python3 common-voice.py`
+2. `python3 train.py`
