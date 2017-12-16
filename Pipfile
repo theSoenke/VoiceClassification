@@ -1,0 +1,26 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+name = "pypi"
+verify_ssl = true
+
+
+[dev-packages]
+
+
+
+[packages]
+
+bleach = "==1.5.0"
+"enum34" = "==1.1.6"
+"html5lib" = "==0.9999999"
+librosa = "==0.5.1"
+markdown = "==2.6.10"
+numpy = "==1.13.3"
+pandas = "==0.21.0"
+protobuf = "==3.5.0.post1"
+python-dateutil = "==2.6.1"
+pytz = "==2017.3"
+tensorflow-tensorboard = "==0.4.0rc3"
+tensorflow = "*"
+werkzeug = "==0.13"
