@@ -7,5 +7,5 @@
 4. `pip install -r requirements.txt`
 
 ## Run
-1. `export DATASET=~/Downloads/cv_corpus_v1`
-2. `python3 train.py`
+1. Extract data `python3 data_extraction.py --data ~/Downloads/cv_corpus_v1`
+2. Train `python3 train.py`
