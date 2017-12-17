@@ -16,11 +16,9 @@ def extract_track_feature(path, index):
     print("Extracting ", path)
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=HOP_LENGTH, n_mfcc=13)
-    spectral_center = librosa.feature.spectral_centroid(
-        y=y, sr=sr, hop_length=HOP_LENGTH)
+    spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=HOP_LENGTH)
     chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=HOP_LENGTH)
-    spectral_contrast = librosa.feature.spectral_contrast(
-        y=y, sr=sr, hop_length=HOP_LENGTH)
+    spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, hop_length=HOP_LENGTH)
 
     feature_matrix = np.zeros((TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
     feature_matrix[:, 0:13] = mfcc.T[0:TIME_SERIES_LENGTH, :]
@@ -31,8 +29,7 @@ def extract_track_feature(path, index):
 
 
 def extract_features(base_path, track_paths, gender):
-    data = np.zeros(
-        (len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
+    data = np.zeros((len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
     classes = []
     futures = []
     with concurrent.futures.ProcessPoolExecutor(8) as executor:
@@ -61,10 +58,7 @@ def prepare_data(csv_path, name, num_samples):
     data_gender = data_gender[data_gender["gender"] != "other"]
     tracks = data_gender['filename'].tolist()[:num_samples]
     labels = data_gender['gender'].tolist()[:num_samples]
-    features, labels = extract_features(
-        DATA_PATH,
-        tracks,
-        labels)
+    features, labels = extract_features(DATA_PATH, tracks, labels)
     save_features(features, labels, name)
 
 

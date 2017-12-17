@@ -8,7 +8,9 @@ from tensorflow.contrib.data import Dataset, Iterator
 def load_data():
     x_train = np.load("features-train.npy")
     y_train = np.load("classes-train.npy")
-    return x_train, y_train
+    x_test = np.load("features-test.npy")
+    y_test = np.load("classes-test.npy")
+    return x_train, y_train, x_test, y_test
 
 
 def RNN(x, time_steps, num_hidden, num_classes):
@@ -30,8 +32,7 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
     logits = RNN(x, time_steps, num_hidden, num_classes)
     prediction = tf.nn.softmax(logits)
 
-    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-        logits=logits, labels=y))
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
@@ -45,8 +46,7 @@ def main():
     feature_size = 33
     learning_rate = 0.001
     training_steps = 100
-    display_step = 100
-    x_train, y_train = load_data()
+    x_train, y_train, x_test, y_test = load_data()
     y_train = np_utils.to_categorical(y_train)
     x, y, loss, accuracy, optimizer = build_graph(feature_size, time_steps, num_classes, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
@@ -57,8 +57,7 @@ def main():
             losses = []
             iterator = Iterator.from_structure(train_data.output_types, train_data.output_shapes)
             next_element = iterator.get_next()
-            training_init_op = iterator.make_initializer(train_data)
-            sess.run(training_init_op)
+            sess.run(iterator.make_initializer(train_data))
             print("Step: ", step)
             while True:
                 try:
@@ -74,6 +73,10 @@ def main():
             loss_sum = np.sum(np.array(losses))
             loss_avg = loss_sum / len(losses)
             print("Loss Average: ", loss_avg)
+
+        # x_test = x_test.reshape((-1,time_steps, feature_size))
+        # y_test = y_test.reshape((-1,2))
+        # print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))
 
 
 if __name__ == "__main__":
