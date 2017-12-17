@@ -55,9 +55,7 @@ def main():
         sess.run(tf.global_variables_initializer())
         for step in range(1, training_steps + 1):
             losses = []
-            acc_avg = []
-            iterator = Iterator.from_structure(
-                train_data.output_types, train_data.output_shapes)
+            iterator = Iterator.from_structure(train_data.output_types, train_data.output_shapes)
             next_element = iterator.get_next()
             training_init_op = iterator.make_initializer(train_data)
             sess.run(training_init_op)
@@ -65,11 +63,9 @@ def main():
             while True:
                 try:
                     x_element, y_element = sess.run(next_element)
-                    x_element = x_element.reshape(
-                        (1, time_steps, feature_size))
+                    x_element = x_element.reshape((1, time_steps, feature_size))
                     y_element = y_element.reshape((-1, 2))
-                    sess.run([loss, accuracy, optimizer], feed_dict={
-                             x: x_element, y: y_element})
+                    sess.run([loss, accuracy, optimizer], feed_dict={x: x_element, y: y_element})
                     loss_value, acc = sess.run([loss, accuracy], feed_dict={x: x_element, y: y_element})
                     losses.append(loss_value)
                 except tf.errors.OutOfRangeError:
@@ -78,9 +74,6 @@ def main():
             loss_sum = np.sum(np.array(losses))
             loss_avg = loss_sum / len(losses)
             print("Loss Average: ", loss_avg)
-            train_loss, train_acc = sess.run([loss, accuracy], feed_dict={x: x_element, y: y_element})
-            print("Loss: ", train_loss)
-            print("Accuracy: ", train_acc)
 
 
 if __name__ == "__main__":
