@@ -54,20 +54,18 @@ def save_features(features, classes, name):
         np.save(f, classes)
 
 
-def prepare_data():
+def prepare_data(csv_path, name, num_samples):
     colums = ['filename', 'gender']
-    train_data_gender = pd.read_csv(os.path.join(
-        DATA_PATH, "cv-valid-train.csv"), usecols=colums)
-    train_data_gender = train_data_gender[train_data_gender["gender"].notnull()]
-    train_data_gender = train_data_gender[train_data_gender["gender"] != "other"]
-
-    train_tracks = train_data_gender['filename'].tolist()
-    train_labels = train_data_gender['gender'].tolist()
-    train_features, train_labels = extract_features(
+    data_gender = pd.read_csv(csv_path, usecols=colums)
+    data_gender = data_gender[data_gender["gender"].notnull()]
+    data_gender = data_gender[data_gender["gender"] != "other"]
+    tracks = data_gender['filename'].tolist()[:num_samples]
+    labels = data_gender['gender'].tolist()[:num_samples]
+    features, labels = extract_features(
         DATA_PATH,
-        train_tracks,
-        train_labels)
-    save_features(train_features, train_labels, "train")
+        tracks,
+        labels)
+    save_features(features, labels, name)
 
 
 if __name__ == "__main__":
@@ -80,4 +78,7 @@ if __name__ == "__main__":
     DATA_PATH = FLAGS.data
     MERGED_FEATURES_SIZE = 33
 
-    prepare_data()
+    print("Prepare train set")
+    prepare_data(os.path.join(DATA_PATH, "cv-valid-train.csv"), "train", 500)
+    print("Prepare test set")
+    prepare_data(os.path.join(DATA_PATH, "cv-valid-test.csv"), "test", 50)
