@@ -43,4 +43,4 @@ srun bash -c 'echo "process $SLURM_PROCID \
 (out of $SLURM_NPROCS total) on $(hostname -s) \
 parameter set $PARAMETER_SET"'
 
-srun bash -c 'CUDA_VISIBLE_DEVICES=$SLURM_PROCID LD_LIBRARY_PATH=/sw/compiler/cuda-8.0.44/lib64:$HOME/cuda/lib64/ python3 $HOME/train.py'
+srun bash -c 'CUDA_VISIBLE_DEVICES=$SLURM_PROCID LD_LIBRARY_PATH=/sw/compiler/cuda-8.0.44/lib64:$HOME/cuda/lib64/ python3 $WORK/VoiceClassification/train.py'
