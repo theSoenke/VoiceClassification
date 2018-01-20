@@ -4,6 +4,8 @@ from tensorflow.contrib import rnn
 from keras.utils import np_utils
 from tensorflow.contrib.data import Dataset, Iterator
 
+np.set_printoptions(threshold=np.nan)
+
 
 def load_data():
     x_train = np.load("features-train.npy")
@@ -20,7 +22,6 @@ def RNN(x, time_steps, num_hidden, num_classes):
 
     w = tf.Variable(tf.truncated_normal([num_hidden, num_classes]))
     b = tf.Variable(tf.truncated_normal([num_classes]))
-    tf.summary.histogram("weights", w)
 
     return tf.matmul(outputs[-1], w) + b
 
@@ -58,12 +59,13 @@ def main():
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
-        train_summary_dir = "/tmp/commonvoice/1"
+        train_summary_dir = '/tmp/commonvoice/1'
         summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
-
         sess.run(tf.global_variables_initializer())
+        saver = tf.train.Saver()
+
         for step in range(1, training_steps + 1):
-            losses = []
+            total_loss = 0.0
             iterator = Iterator.from_structure(train_data.output_types, train_data.output_shapes)
             next_element = iterator.get_next()
             sess.run(iterator.make_initializer(train_data))
@@ -74,19 +76,16 @@ def main():
                     x_element = x_element.reshape((1, time_steps, feature_size))
                     y_element = y_element.reshape((-1, 2))
                     feed_dict = {x: x_element, y: y_element}
-                    loss_value, acc, _ = sess.run([loss, accuracy, optimizer], feed_dict=feed_dict)
-
-                    if step % 1 == 0 and step != 0:
-                        summary = sess.run(summary_op, feed_dict=feed_dict)
-                        summary_writer.add_summary(summary, step)
-                    losses.append(loss_value)
+                    loss_value, acc, _, summary= sess.run([loss, accuracy, optimizer, summary_op], feed_dict=feed_dict)
+                    summary_writer.add_summary(summary, step)
+                    total_loss += loss_value
                 except tf.errors.OutOfRangeError:
                     break
 
-            loss_sum = np.sum(np.array(losses))
-            loss_avg = loss_sum / len(losses)
+            loss_avg = total_loss / (training_steps + 1)
             print("Loss Average: ", loss_avg)
 
+        saver.save(sess, './model.ckpt')
         # x_test = x_test.reshape((-1,time_steps, feature_size))
         # y_test = y_test.reshape((-1,2))
         # print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))

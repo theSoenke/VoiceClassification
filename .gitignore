@@ -1,2 +1,4 @@
 env/
 *.npy
+checkpoint
+*.ckpt.*
