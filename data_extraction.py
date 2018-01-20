@@ -5,6 +5,7 @@ import librosa
 import argparse
 import pandas as pd
 import concurrent.futures
+import tensorflow as tf
 
 np.set_printoptions(threshold=np.nan)
 
@@ -43,6 +44,7 @@ def extract_features(base_path, track_paths, gender):
             result = future.result()
             data[result[1]] = result[0]
 
+    data = tf.keras.utils.normalize(data)
     return data, np.array(classes)
 
 
