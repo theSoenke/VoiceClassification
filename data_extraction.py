@@ -6,13 +6,19 @@ import argparse
 import pandas as pd
 import concurrent.futures
 
+
 target_dict = {
     "male": 0,
     "female": 1
 }
 
 
-def extract_track_feature(path, index):
+def extract_track_feature_parallel(path, index):
+    features = extract_track_feature(path)
+    return (features, index)
+
+
+def extract_track_feature(path):
     print("Extracting ", path)
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=HOP_LENGTH, n_mfcc=13)
@@ -20,25 +26,34 @@ def extract_track_feature(path, index):
     chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=HOP_LENGTH)
     spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, hop_length=HOP_LENGTH)
 
-    feature_matrix = np.zeros((TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
-    feature_matrix[:, 0:13] = mfcc.T[0:TIME_SERIES_LENGTH, :]
-    feature_matrix[:, 13:14] = spectral_center.T[0:TIME_SERIES_LENGTH, :]
-    feature_matrix[:, 14:26] = chroma.T[0:TIME_SERIES_LENGTH, :]
-    feature_matrix[:, 26:33] = spectral_contrast.T[0:TIME_SERIES_LENGTH, :]
-    return (feature_matrix, index)
+    features = np.zeros((TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
+    features[:, 0:13] = mfcc.T[0:TIME_SERIES_LENGTH, :]
+    features[:, 13:14] = spectral_center.T[0:TIME_SERIES_LENGTH, :]
+    features[:, 14:26] = chroma.T[0:TIME_SERIES_LENGTH, :]
+    features[:, 26:33] = spectral_contrast.T[0:TIME_SERIES_LENGTH, :]
+    return features
 
 
-def extract_features(base_path, track_paths, gender):
+def extract_feature_parallel(base_path, track_paths, gender):
     data = np.zeros((len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
     classes = []
     futures = []
     with concurrent.futures.ProcessPoolExecutor(8) as executor:
         for i, track in enumerate(track_paths):
             classes.append(target_dict[gender[i]])
-            future = executor.submit(extract_track_feature, os.path.join(base_path, track), i)
+            future = executor.submit(extract_track_feature_parallel, os.path.join(base_path, track), i)
     for future in concurrent.futures.as_completed(futures):
         data[future[1]] = future[0]
 
+    return data, np.array(classes)
+
+
+def extract_features(base_path, track_paths, gender):
+    data = np.zeros((len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
+    classes = []
+    for i, track in enumerate(track_paths):
+        classes.append(target_dict[gender[i]])
+        data[i] = extract_track_feature(os.path.join(base_path, track))
     return data, np.array(classes)
 
 
