@@ -37,7 +37,13 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-    return x, y, loss, accuracy, optimizer
+    with tf.name_scope("summaries"):
+        tf.summary.scalar("loss", loss)
+        tf.summary.scalar("accuracy", accuracy)
+        tf.summary.histogram("histogram loss", loss)
+        summary_op = tf.summary.merge_all()
+
+    return x, y, loss, accuracy, optimizer, summary_op
 
 
 def main():
@@ -48,10 +54,13 @@ def main():
     training_steps = 100
     x_train, y_train, x_test, y_test = load_data()
     y_train = np_utils.to_categorical(y_train)
-    x, y, loss, accuracy, optimizer = build_graph(feature_size, time_steps, num_classes, learning_rate)
+    x, y, loss, accuracy, optimizer, summary_op = build_graph(feature_size, time_steps, num_classes, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
+        train_summary_dir = "/tmp/dnn/3"
+        summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
+
         sess.run(tf.global_variables_initializer())
         for step in range(1, training_steps + 1):
             losses = []
@@ -64,8 +73,12 @@ def main():
                     x_element, y_element = sess.run(next_element)
                     x_element = x_element.reshape((1, time_steps, feature_size))
                     y_element = y_element.reshape((-1, 2))
-                    sess.run([loss, accuracy, optimizer], feed_dict={x: x_element, y: y_element})
-                    loss_value, acc = sess.run([loss, accuracy], feed_dict={x: x_element, y: y_element})
+                    train_dict = {x: x_element, y: y_element}
+                    loss_value, acc, _, summary = sess.run([loss, accuracy, optimizer, summary_op], feed_dict=train_dict)
+
+                    if step % 1 == 0 and step != 0:
+                        summary_str = sess.run(summary_op, feed_dict=train_dict)
+                        summary_writer.add_summary(summary, step)
                     losses.append(loss_value)
                 except tf.errors.OutOfRangeError:
                     break
