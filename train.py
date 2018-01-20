@@ -18,8 +18,9 @@ def RNN(x, time_steps, num_hidden, num_classes):
     lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0)
     outputs, hidden_states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
 
-    w = tf.Variable(tf.random_normal([num_hidden, num_classes]))
-    b = tf.Variable(tf.random_normal([num_classes]))
+    w = tf.Variable(tf.truncated_normal([num_hidden, num_classes]))
+    b = tf.Variable(tf.truncated_normal([num_classes]))
+    tf.summary.histogram("weights", w)
 
     return tf.matmul(outputs[-1], w) + b
 
@@ -37,11 +38,10 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-    with tf.name_scope("summaries"):
-        tf.summary.scalar("loss", loss)
-        tf.summary.scalar("accuracy", accuracy)
-        tf.summary.histogram("histogram loss", loss)
-        summary_op = tf.summary.merge_all()
+    tf.summary.scalar("loss", loss)
+    tf.summary.scalar("accuracy", accuracy)
+    tf.summary.histogram("histogram loss", loss)
+    summary_op = tf.summary.merge_all()
 
     return x, y, loss, accuracy, optimizer, summary_op
 
@@ -58,7 +58,7 @@ def main():
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
-        train_summary_dir = "/tmp/dnn/3"
+        train_summary_dir = "/tmp/commonvoice/1"
         summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
 
         sess.run(tf.global_variables_initializer())
@@ -73,11 +73,11 @@ def main():
                     x_element, y_element = sess.run(next_element)
                     x_element = x_element.reshape((1, time_steps, feature_size))
                     y_element = y_element.reshape((-1, 2))
-                    train_dict = {x: x_element, y: y_element}
-                    loss_value, acc, _, summary = sess.run([loss, accuracy, optimizer, summary_op], feed_dict=train_dict)
+                    feed_dict = {x: x_element, y: y_element}
+                    loss_value, acc, _ = sess.run([loss, accuracy, optimizer], feed_dict=feed_dict)
 
                     if step % 1 == 0 and step != 0:
-                        summary_str = sess.run(summary_op, feed_dict=train_dict)
+                        summary = sess.run(summary_op, feed_dict=feed_dict)
                         summary_writer.add_summary(summary, step)
                     losses.append(loss_value)
                 except tf.errors.OutOfRangeError:
