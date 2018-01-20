@@ -6,6 +6,7 @@ import argparse
 import pandas as pd
 import concurrent.futures
 
+np.set_printoptions(threshold=np.nan)
 
 target_dict = {
     "male": 0,
@@ -13,12 +14,7 @@ target_dict = {
 }
 
 
-def extract_track_feature_parallel(path, index):
-    features = extract_track_feature(path)
-    return (features, index)
-
-
-def extract_track_feature(path):
+def extract_track_feature(path, index):
     print("Extracting ", path)
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=HOP_LENGTH, n_mfcc=13)
@@ -31,29 +27,22 @@ def extract_track_feature(path):
     features[:, 13:14] = spectral_center.T[0:TIME_SERIES_LENGTH, :]
     features[:, 14:26] = chroma.T[0:TIME_SERIES_LENGTH, :]
     features[:, 26:33] = spectral_contrast.T[0:TIME_SERIES_LENGTH, :]
-    return features
+    return (features, index)
 
 
-def extract_feature_parallel(base_path, track_paths, gender):
+def extract_features(base_path, track_paths, gender):
     data = np.zeros((len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
     classes = []
     futures = []
     with concurrent.futures.ProcessPoolExecutor(8) as executor:
         for i, track in enumerate(track_paths):
             classes.append(target_dict[gender[i]])
-            future = executor.submit(extract_track_feature_parallel, os.path.join(base_path, track), i)
-    for future in concurrent.futures.as_completed(futures):
-        data[future[1]] = future[0]
+            future = executor.submit(extract_track_feature, os.path.join(base_path, track), i)
+            futures.append(future)
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            data[result[1]] = result[0]
 
-    return data, np.array(classes)
-
-
-def extract_features(base_path, track_paths, gender):
-    data = np.zeros((len(track_paths), TIME_SERIES_LENGTH, MERGED_FEATURES_SIZE))
-    classes = []
-    for i, track in enumerate(track_paths):
-        classes.append(target_dict[gender[i]])
-        data[i] = extract_track_feature(os.path.join(base_path, track))
     return data, np.array(classes)
 
 
