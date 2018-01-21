@@ -3,3 +3,4 @@ env/
 checkpoint
 *.ckpt.*
 logs/
+__pycache__/
