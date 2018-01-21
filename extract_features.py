@@ -5,6 +5,7 @@ import numpy as np
 import os
 import tensorflow as tf
 import gender_data as gender_data
+import age_data as age_data
 
 
 def get_track_features(path, time_series_length, features_size, hop_length, index):
@@ -41,24 +42,24 @@ def extract(base_path, track_paths, labels, target_classes, time_series_length, 
 
 
 def save(features, classes, classifier, set):
-    save_features_name = classifier + "features-" + set + ".npy"
-    save_classes_name = classifier + "classes-" + set + ".npy"
+    save_features_name = classifier + "-features-" + set + ".npy"
+    save_classes_name = classifier + "-classes-" + set + ".npy"
     with open(save_features_name, "wb") as f:
         np.save(f, features)
     with open(save_classes_name, "wb") as f:
         np.save(f, classes)
 
 
-def extract_gender(base_path, time_series_length, features_size, hop_length):
-    print("Prepare train set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", 500)
+def extract_data(prepare_func, base_path, classifier, time_series_length, features_size, hop_length):
+    print("Prepare " + classifier + " train set")
+    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-train.csv", 500)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
-    save(features, labels, "gender", "train")
+    save(features, labels, classifier, "train")
 
-    print("Prepare test set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 50)
+    print("Prepare " + classifier + " test set")
+    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-test.csv", 50)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
-    save(features, labels, "gender", "test")
+    save(features, labels, classifier, "test")
 
 
 def main():
@@ -71,7 +72,11 @@ def main():
     hop_length = 128
     features_size = 33
 
-    extract_gender(base_path, time_series_length, features_size, hop_length)
+    gender_prepare_func = lambda base_path, csv, samples: gender_data.prepare(base_path, csv, samples)
+    extract_data(gender_prepare_func, base_path, "gender", time_series_length, features_size, hop_length)
+
+    age_prepare_func = lambda base_path, csv, samples: age_data.prepare(base_path, csv, samples)
+    extract_data(age_prepare_func, base_path, "age", time_series_length, features_size, hop_length)
 
 
 if __name__ == "__main__":
