@@ -2,7 +2,7 @@
 
 # one is no fit for the job! You can do that either in the sbatch
 # command line or here with the other settings.
-#SBATCH --job-name=extract_data
+#SBATCH --job-name=extract
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=8
 #SBATCH --time=02:00:00

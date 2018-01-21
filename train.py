@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib import rnn
@@ -5,6 +6,7 @@ from keras.utils import np_utils
 from tensorflow.contrib.data import Dataset, Iterator
 
 np.set_printoptions(threshold=np.nan)
+np.random.seed = 42
 
 
 def load_data():
@@ -54,6 +56,13 @@ def main():
     learning_rate = 0.001
     training_steps = 100
 
+    process_id = os.getenv('SLURM_PROCID')
+    cluster = False if process_id == None else True
+    print(process_id)
+    if process_id == 1:
+        learning_rate = 0.01
+    print("using learning rate of: " + learning_rate)
+
     x_train, y_train, x_test, y_test = load_data()
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
@@ -64,7 +73,7 @@ def main():
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
-        train_summary_dir = '/tmp/commonvoice/1'
+        train_summary_dir = './logs/1'
         summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
