@@ -7,11 +7,11 @@ np.set_printoptions(threshold=np.nan)
 np.random.seed = 42
 
 
-def load_data():
-    x_train = np.load("features-train.npy")
-    y_train = np.load("classes-train.npy")
-    x_test = np.load("features-test.npy")
-    y_test = np.load("classes-test.npy")
+def load_data(classifier):
+    x_train = np.load(classifier + "-features-train.npy")
+    y_train = np.load(classifier + "-classes-train.npy")
+    x_test = np.load(classifier + "-features-test.npy")
+    y_test = np.load(classifier + "-classes-test.npy")
     return x_train, y_train, x_test, y_test
 
 

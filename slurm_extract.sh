@@ -25,4 +25,4 @@ module load /sw/BASE/env/2017Q1-gcc-openmpi /sw/BASE/env/cuda-8.0.44_system-gcc
 echo "Hello World! I am $(hostname -s) greeting you!"
 echo "Also, my current TMPDIR: $TMPDIR"
 
-srun bash -c 'python3 $WORK/VoiceClassification/data_extraction.py --data $WORK/cv_corpus_v1'
+srun bash -c 'python3 $WORK/VoiceClassification/extract_features.py --data $WORK/cv_corpus_v1'

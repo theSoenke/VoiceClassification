@@ -18,7 +18,7 @@ def train(summary_dir):
         learning_rate = 0.01
     print("Learning rate: " + str(learning_rate))
 
-    x_train, y_train, x_test, y_test = load_data()
+    x_train, y_train, x_test, y_test = load_data("gender")
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
     x_test = x_test.reshape((-1, time_steps, feature_size))
