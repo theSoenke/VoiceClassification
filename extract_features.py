@@ -8,7 +8,7 @@ import gender_data as gender_data
 import age_data as age_data
 
 
-def get_track_features(path, time_series_length, features_size, hop_length, index):
+def track_features(path, time_series_length, features_size, hop_length, index):
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=hop_length, n_mfcc=13)
     spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)
@@ -31,7 +31,7 @@ def extract(base_path, track_paths, labels, target_classes, time_series_length, 
         for i, track in enumerate(track_paths):
             classes.append(target_classes[labels[i]])
             print("Extracting ", track)
-            future = executor.submit(get_track_features, os.path.join(base_path, track), time_series_length, features_size, hop_length, i)
+            future = executor.submit(track_features, os.path.join(base_path, track), time_series_length, features_size, hop_length, i)
             futures.append(future)
         for future in concurrent.futures.as_completed(futures):
             result = future.result()
@@ -52,12 +52,12 @@ def save(features, classes, classifier, set):
 
 def extract_data(prepare_func, base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare " + classifier + " train set")
-    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-train.csv", 500)
+    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-train.csv", 10000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
     print("Prepare " + classifier + " test set")
-    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-test.csv", 50)
+    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-test.csv", 1000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "test")
 

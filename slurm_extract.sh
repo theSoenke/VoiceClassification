@@ -4,8 +4,8 @@
 # command line or here with the other settings.
 #SBATCH --job-name=extract
 #SBATCH --nodes=1
-#SBATCH --tasks-per-node=8
-#SBATCH --time=02:00:00
+#SBATCH --tasks-per-node=2
+#SBATCH --time=01:00:00
 # Never forget that! Strange happenings ensue otherwise.
 #SBATCH --export=NONE
 
@@ -25,4 +25,8 @@ module load /sw/BASE/env/2017Q1-gcc-openmpi /sw/BASE/env/cuda-8.0.44_system-gcc
 echo "Hello World! I am $(hostname -s) greeting you!"
 echo "Also, my current TMPDIR: $TMPDIR"
 
-srun bash -c 'python3 $WORK/VoiceClassification/extract_features.py --data $WORK/cv_corpus_v1'
+echo "nvidia-smi:"
+srun bash -c 'nvidia-smi'
+
+
+srun bash -c 'LD_LIBRARY_PATH=/sw/compiler/cuda-8.0.44/lib64:$HOME/cuda/lib64/ python3 $WORK/VoiceClassification/extract_features.py --data $WORK/cv_corpus_v1'
