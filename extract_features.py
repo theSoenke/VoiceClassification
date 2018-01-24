@@ -17,9 +17,9 @@ def track_features(path, time_series_length, features_size, hop_length, index):
 
     features = np.zeros((time_series_length, features_size))
     features[:, 0:13] = mfcc.T[0:time_series_length, :]
-    features[:, 13:14] = spectral_center.T[0:time_series_length, :]
-    features[:, 14:26] = chroma.T[0:time_series_length, :]
-    features[:, 26:33] = spectral_contrast.T[0:time_series_length, :]
+    # features[:, 13:14] = spectral_center.T[0:time_series_length, :]
+    # features[:, 14:26] = chroma.T[0:time_series_length, :]
+    # features[:, 26:33] = spectral_contrast.T[0:time_series_length, :]
     return (features, index)
 
 
@@ -50,14 +50,26 @@ def save(features, classes, classifier, set):
         np.save(f, classes)
 
 
-def extract_data(prepare_func, base_path, classifier, time_series_length, features_size, hop_length):
-    print("Prepare " + classifier + " train set")
-    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-train.csv", 10000)
+def extract_gender(base_path, classifier, time_series_length, features_size, hop_length):
+    print("Prepare gender train set")
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", 1000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
-    print("Prepare " + classifier + " test set")
-    tracks, labels, target_classes = prepare_func(base_path, "cv-valid-test.csv", 1000)
+    print("Prepare gender test set")
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 1000)
+    features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
+    save(features, labels, classifier, "test")
+
+
+def extract_age(base_path, classifier, time_series_length, features_size, hop_length):
+    print("Prepare age train set")
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", 1000)
+    features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
+    save(features, labels, classifier, "train")
+
+    print("Prepare age test set")
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 1000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "test")
 
@@ -70,13 +82,10 @@ def main():
     base_path = FLAGS.data
     time_series_length = FLAGS.time_series_length
     hop_length = 128
-    features_size = 33
+    features_size = 13
 
-    gender_prepare_func = lambda base_path, csv, samples: gender_data.prepare(base_path, csv, samples)
-    extract_data(gender_prepare_func, base_path, "gender", time_series_length, features_size, hop_length)
-
-    age_prepare_func = lambda base_path, csv, samples: age_data.prepare(base_path, csv, samples)
-    extract_data(age_prepare_func, base_path, "age", time_series_length, features_size, hop_length)
+    extract_gender(base_path, "gender", time_series_length, features_size, hop_length)
+    extract_age( base_path, "age", time_series_length, features_size, hop_length)
 
 
 if __name__ == "__main__":
