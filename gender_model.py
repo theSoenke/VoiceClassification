@@ -7,19 +7,19 @@ import sys
 from train import load_data, build_graph
 
 
-def train(summary_dir):
+def train(summary_dir, steps, samples):
     time_steps = 128
     num_classes = 2
     feature_size = 13
     learning_rate = 0.001
-    training_steps = 100
+    training_steps = steps
 
     process_id = os.getenv('SLURM_PROCID')
     if process_id == 1:
         learning_rate = 0.01
     print("Learning rate: " + str(learning_rate))
 
-    x_train, y_train, x_test, y_test = load_data("gender")
+    x_train, y_train, x_test, y_test = load_data("gender", samples, 500)
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
     x_test = x_test.reshape((-1, time_steps, feature_size))

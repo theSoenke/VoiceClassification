@@ -11,9 +11,9 @@ import age_data as age_data
 def track_features(path, time_series_length, features_size, hop_length, index):
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=hop_length, n_mfcc=13)
-    spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)
-    chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop_length)
-    spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, hop_length=hop_length)
+    # spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)
+    # chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop_length)
+    # spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, hop_length=hop_length)
 
     features = np.zeros((time_series_length, features_size))
     features[:, 0:13] = mfcc.T[0:time_series_length, :]

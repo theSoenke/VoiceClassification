@@ -6,7 +6,7 @@
 #SBATCH --partition=gpu --qos=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=2
-#SBATCH --time=01:00:00
+#SBATCH --time=08:00:00
 # Never forget that! Strange happenings ensue otherwise.
 #SBATCH --export=NONE
 

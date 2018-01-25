@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib import rnn
@@ -7,12 +8,12 @@ np.set_printoptions(threshold=np.nan)
 np.random.seed = 42
 
 
-def load_data(classifier):
+def load_data(classifier, samples, samples_test):
     x_train = np.load(classifier + "-features-train.npy")
     y_train = np.load(classifier + "-classes-train.npy")
     x_test = np.load(classifier + "-features-test.npy")
     y_test = np.load(classifier + "-classes-test.npy")
-    return x_train, y_train, x_test, y_test
+    return x_train[:samples], y_train[:samples], x_test[:samples_test], y_test[:samples]
 
 
 def RNN(x, time_steps, num_hidden, num_classes):
@@ -48,8 +49,13 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--samples")
+    parser.add_argument("--steps")
+    FLAGS, unknown = parser.parse_known_args()
+    samples = FLAGS.samples
     train_summary_dir = './logs/1'
-    gender.train(train_summary_dir)
+    gender.train(train_summary_dir, steps, samples)
 
 
 if __name__ == "__main__":

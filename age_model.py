@@ -6,7 +6,7 @@ from tensorflow.contrib.data import Dataset, Iterator
 import train as train_model
 
 
-def train(summary_dir):
+def train(summary_dir, samples):
     time_steps = 128
     num_classes = 8
     feature_size = 13
@@ -18,7 +18,7 @@ def train(summary_dir):
         learning_rate = 0.01
     print("Learning rate: " + str(learning_rate))
 
-    x_train, y_train, x_test, y_test = train_model.load_data("age")
+    x_train, y_train, x_test, y_test = train_model.load_data("age", samples, 500)
     y_train = tf.one_hot(y_train, num_classes)
     x_test = x_test.reshape((-1, time_steps, feature_size))
     y_test = tf.one_hot(y_test, num_classes)

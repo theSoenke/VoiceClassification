@@ -10,7 +10,7 @@ Voice classification based on the [Common Voice](https://voice.mozilla.org/data)
 ## Train
 1. `pipenv shell`
 2. `python3 extract_features.py --data ~/Downloads/cv_corpus_v1`
-3. `python3 train.py`
+3. `python3 train.py --steps 100 --samples 1000`
 
 ## Cluster
 1. Submit job `sbatch slurm_train.sh`
