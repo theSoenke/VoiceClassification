@@ -50,10 +50,11 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--samples")
-    parser.add_argument("--steps")
+    parser.add_argument("--samples", type=int, default=500)
+    parser.add_argument("--steps", type=int, default=100)
     FLAGS, unknown = parser.parse_known_args()
     samples = FLAGS.samples
+    steps = FLAGS.steps
     train_summary_dir = './logs/1'
     gender.train(train_summary_dir, steps, samples)
 
