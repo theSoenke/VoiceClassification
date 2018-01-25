@@ -9,7 +9,7 @@ import train as train_model
 def train(summary_dir):
     time_steps = 128
     num_classes = 8
-    feature_size = 33
+    feature_size = 13
     learning_rate = 0.001
     training_steps = 100
 
@@ -19,10 +19,9 @@ def train(summary_dir):
     print("Learning rate: " + str(learning_rate))
 
     x_train, y_train, x_test, y_test = train_model.load_data("age")
-    # y_train = np_utils.to_categorical(y_train)
-    # y_test = np_utils.to_categorical(y_test)
+    y_train = tf.one_hot(y_train, num_classes)
     x_test = x_test.reshape((-1, time_steps, feature_size))
-    # y_test = y_test.reshape((-1, 8))
+    y_test = tf.one_hot(y_test, num_classes)
 
     x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
@@ -45,7 +44,6 @@ def train(summary_dir):
                     total_steps += 1
                     x_element, y_element = sess.run(next_element)
                     x_element = x_element.reshape((1, time_steps, feature_size))
-                    # y_element = y_element.reshape((-1, 2))
                     feed_dict = {x: x_element, y: y_element}
                     loss_value, accuracy_value, _ = sess.run([loss, accuracy, optimizer], feed_dict=feed_dict)
                     total_loss += loss_value
