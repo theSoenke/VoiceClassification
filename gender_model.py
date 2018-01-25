@@ -9,7 +9,7 @@ from train import load_data, build_graph
 def train(summary_dir):
     time_steps = 128
     num_classes = 2
-    feature_size = 33
+    feature_size = 13
     learning_rate = 0.001
     training_steps = 100
 
