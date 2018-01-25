@@ -3,6 +3,7 @@ import numpy as np
 from keras.utils import np_utils
 import tensorflow as tf
 from tensorflow.contrib.data import Dataset, Iterator
+import sys
 from train import load_data, build_graph
 
 
@@ -60,6 +61,7 @@ def train(summary_dir):
 
             print("Loss: ", total_loss / total_steps)
             print("Accuracy: ", total_accuracy / total_steps)
+            sys.stdout.flush()
 
         saver.save(sess, './model-gender.ckpt')
 
