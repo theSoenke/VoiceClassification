@@ -23,7 +23,7 @@ def train(summary_dir, steps, samples):
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
     x_test = x_test.reshape((-1, time_steps, feature_size))
-    y_test = y_test.reshape((-1, 2))
+    y_test = y_test.reshape((-1, num_classes))
 
     x, y, loss, accuracy, optimizer, summary_op = build_graph(feature_size, time_steps, num_classes, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
@@ -46,7 +46,7 @@ def train(summary_dir, steps, samples):
                     total_steps += 1
                     x_element, y_element = sess.run(next_element)
                     x_element = x_element.reshape((1, time_steps, feature_size))
-                    y_element = y_element.reshape((-1, 2))
+                    y_element = y_element.reshape((-1, num_classes))
                     feed_dict = {x: x_element, y: y_element}
                     loss_value, accuracy_value, _ = sess.run([loss, accuracy, optimizer], feed_dict=feed_dict)
                     total_loss += loss_value
@@ -66,4 +66,4 @@ def train(summary_dir, steps, samples):
         saver.save(sess, './model-gender.ckpt')
 
         print("Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train}))
-        print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))
+        # print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))

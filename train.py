@@ -2,7 +2,8 @@ import argparse
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib import rnn
-import gender_model as gender
+import gender_model as gender_model
+import age_model as age_model
 
 np.set_printoptions(threshold=np.nan)
 np.random.seed = 42
@@ -56,7 +57,9 @@ def main():
     samples = FLAGS.samples
     steps = FLAGS.steps
     train_summary_dir = './logs/1'
-    gender.train(train_summary_dir, steps, samples)
+
+    gender_model.train(train_summary_dir, steps, samples)
+    age_model.train(train_summary_dir, steps, samples)
 
 
 if __name__ == "__main__":

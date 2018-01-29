@@ -6,12 +6,12 @@ from tensorflow.contrib.data import Dataset, Iterator
 import train as train_model
 
 
-def train(summary_dir, samples):
+def train(summary_dir, steps, samples):
     time_steps = 128
     num_classes = 8
     feature_size = 13
     learning_rate = 0.001
-    training_steps = 100
+    training_steps = steps
 
     process_id = os.getenv('SLURM_PROCID')
     if process_id == 1:
@@ -44,6 +44,7 @@ def train(summary_dir, samples):
                     total_steps += 1
                     x_element, y_element = sess.run(next_element)
                     x_element = x_element.reshape((1, time_steps, feature_size))
+                    y_element = y_element.reshape((-1, num_classes))
                     feed_dict = {x: x_element, y: y_element}
                     loss_value, accuracy_value, _ = sess.run([loss, accuracy, optimizer], feed_dict=feed_dict)
                     total_loss += loss_value
@@ -52,7 +53,7 @@ def train(summary_dir, samples):
                     break
 
             if step % 5 == 0:
-                feed_dict = {x: x_train, y: y_train}
+                feed_dict = {x: x_train, y: y_train.eval()}
                 _, _, summary = sess.run([loss, accuracy, summary_op], feed_dict=feed_dict)
                 summary_writer.add_summary(summary, step)
 
@@ -61,5 +62,5 @@ def train(summary_dir, samples):
 
         saver.save(sess, './model-age.ckpt')
 
-        print("Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train}))
-        print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))
+        print("Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train.eval()}))
+        # print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test.eval()}))
