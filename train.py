@@ -22,6 +22,7 @@ def load_data(classifier, samples, samples_test):
 def RNN(x, time_steps, num_hidden, num_classes):
     x = tf.unstack(x, time_steps, 1)
     lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0)
+    lstm_cell = rnn.DropoutWrapper(lstm_cell, output_keep_prob=0.5)
     outputs, hidden_states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
 
     w = tf.Variable(tf.truncated_normal([num_hidden, num_classes]))
@@ -63,7 +64,7 @@ def main():
     train_summary_dir = './logs/1'
 
     process_id = os.getenv('SLURM_PROCID')
-    print("process id: " + str(process_id))
+    print("slurm process id: " + str(process_id))
     if process_id == '0':
         label = 'age'
         print("Slurm: Train age model")

@@ -8,7 +8,7 @@ import train as train_model
 
 def train(summary_dir, steps, samples):
     time_steps = 128
-    num_classes = 16
+    num_classes = 8
     feature_size = 13
     learning_rate = 0.001
     training_steps = steps
