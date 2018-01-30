@@ -60,5 +60,5 @@ def train(summary_dir, steps, samples):
 
         saver.save(sess, './models/model-gender.ckpt')
 
-        print("Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train}))
-        # print("Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))
+        print("\nGender Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train}))
+        print("Gender Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test}))

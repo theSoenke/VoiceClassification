@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import tensorflow as tf
@@ -54,17 +55,32 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--samples", type=int, default=500)
     parser.add_argument("--steps", type=int, default=100)
+    parser.add_argument("--label", type=str, default='gender')
     FLAGS, unknown = parser.parse_known_args()
     samples = FLAGS.samples
     steps = FLAGS.steps
+    label = FLAGS.label
     train_summary_dir = './logs/1'
 
-    print("Train Gender Model")
-    gender_model.train(train_summary_dir, steps, samples)
-    print("Train Age Model")
-    age_model.train(train_summary_dir, steps, samples)
-    print("Train Accent Model")
-    accent_model.train(train_summary_dir, steps, samples)
+    process_id = os.getenv('SLURM_PROCID')
+    if process_id == 0:
+        label = 'age'
+        print("Slurm: Train age model")
+    elif process_id == 1:
+        label = 'accent'
+        print("Slurm: Train accent model")
+
+    if label == 'gender':
+        print("Train Gender Model")
+        gender_model.train(train_summary_dir, steps, samples)
+    elif label == 'age':
+        print("Train Age Model")
+        age_model.train(train_summary_dir, steps, samples)
+    elif label == 'accent':
+        print("Train Accent Model")
+        accent_model.train(train_summary_dir, steps, samples)
+    else:
+        print("Label not valid. Available labels <gender, age, accent>")
 
 
 if __name__ == "__main__":
