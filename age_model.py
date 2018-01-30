@@ -13,11 +13,6 @@ def train(summary_dir, steps, samples):
     learning_rate = 0.001
     training_steps = steps
 
-    process_id = os.getenv('SLURM_PROCID')
-    if process_id == 1:
-        learning_rate = 0.01
-    print("Learning rate: " + str(learning_rate))
-
     x_train, y_train, x_test, y_test = train_model.load_data("age", samples, 500)
     y_train = tf.one_hot(y_train, num_classes)
     x_test = x_test.reshape((-1, time_steps, feature_size))

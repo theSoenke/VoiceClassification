@@ -14,11 +14,6 @@ def train(summary_dir, steps, samples):
     learning_rate = 0.001
     training_steps = steps
 
-    process_id = os.getenv('SLURM_PROCID')
-    if process_id == 1:
-        learning_rate = 0.01
-    print("Learning rate: " + str(learning_rate))
-
     x_train, y_train, x_test, y_test = load_data("gender", samples, 500)
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
