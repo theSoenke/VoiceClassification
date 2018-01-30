@@ -1,6 +1,7 @@
 env/
 *.npy
 checkpoint
-*.ckpt.*
 logs/
 __pycache__/
+models/
+features/
