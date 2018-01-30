@@ -8,12 +8,12 @@ import train as train_model
 
 def train(summary_dir, steps, samples):
     time_steps = 128
-    num_classes = 16
+    num_classes = 8
     feature_size = 13
     learning_rate = 0.001
     training_steps = steps
 
-    x_train, y_train, x_test, y_test = train_model.load_data("age", samples, 500)
+    x_train, y_train, x_test, y_test = train_model.load_data("accent", samples, 500)
     y_train = tf.one_hot(y_train, num_classes)
     x_test = x_test.reshape((-1, time_steps, feature_size))
     y_test = tf.one_hot(y_test, num_classes)

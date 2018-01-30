@@ -6,6 +6,7 @@ import os
 import tensorflow as tf
 import gender_data as gender_data
 import age_data as age_data
+import accent_data as accent_data
 
 
 def track_features(path, time_series_length, features_size, hop_length, index):
@@ -74,6 +75,18 @@ def extract_age(base_path, classifier, time_series_length, features_size, hop_le
     save(features, labels, classifier, "test")
 
 
+def extract_accent(base_path, classifier, time_series_length, features_size, hop_length):
+    print("Prepare accent train set")
+    tracks, labels, target_classes = accent_data.prepare(base_path, "cv-valid-train.csv", 1000)
+    features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
+    save(features, labels, classifier, "train")
+
+    print("Prepare accent test set")
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 1000)
+    features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
+    save(features, labels, classifier, "test")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--time_series_length", type=int, default=128)
@@ -84,8 +97,9 @@ def main():
     hop_length = 128
     features_size = 13
 
-    extract_gender(base_path, "gender", time_series_length, features_size, hop_length)
-    extract_age( base_path, "age", time_series_length, features_size, hop_length)
+    # extract_gender(base_path, "gender", time_series_length, features_size, hop_length)
+    # extract_age(base_path, "age", time_series_length, features_size, hop_length)
+    extract_accent(base_path, "accent", time_series_length, features_size, hop_length)
 
 
 if __name__ == "__main__":

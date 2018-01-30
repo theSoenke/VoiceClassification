@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow.contrib import rnn
 import gender_model as gender_model
 import age_model as age_model
+import accent_model as accent_model
 
 np.set_printoptions(threshold=np.nan)
 np.random.seed = 42
@@ -58,8 +59,12 @@ def main():
     steps = FLAGS.steps
     train_summary_dir = './logs/1'
 
+    print("Train Gender Model")
     gender_model.train(train_summary_dir, steps, samples)
+    print("Train Age Model")
     age_model.train(train_summary_dir, steps, samples)
+    print("Train Accent Model")
+    accent_model.train(train_summary_dir, steps, samples)
 
 
 if __name__ == "__main__":
