@@ -9,9 +9,9 @@
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "4.9.76-70.lts",
+            "platform_release": "4.9.78-72.lts",
             "platform_system": "Linux",
-            "platform_version": "#1 SMP Sat Jan 13 18:44:53 UTC 2018",
+            "platform_version": "#1 SMP Fri Jan 26 18:26:30 UTC 2018",
             "python_full_version": "3.5.4",
             "python_version": "3.5",
             "sys_platform": "linux"
@@ -27,6 +27,12 @@
         ]
     },
     "default": {
+        "absl-py": {
+            "hashes": [
+                "sha256:1c787e3bc7ef8fea7a8a79cf36b0c550b4bd66e13c05d1352fbc5786488befb0"
+            ],
+            "version": "==0.1.9"
+        },
         "audioread": {
             "hashes": [
                 "sha256:36c3b118f097c58ba073b7d040c4319eff200756f094295677567e256282d0d7"
@@ -55,6 +61,13 @@
                 "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"
             ],
             "version": "==1.1.6"
+        },
+        "futures": {
+            "hashes": [
+                "sha256:c4884a65654a7c45435063e14ae85280eb1f111d94e542396717ba9828c4337f",
+                "sha256:51ecb45f0add83c806c68e4b06106f90db260585b25ef2abfcda0bd95c0132fd"
+            ],
+            "version": "==3.1.1"
         },
         "html5lib": {
             "hashes": [
@@ -308,25 +321,27 @@
         },
         "tensorflow": {
             "hashes": [
-                "sha256:f9c03acc5d26ac903e177fb904ceb797632830c5a0fae5c8b49d688a748337db",
-                "sha256:c6d798da0002778f38e3b097acd7a620c89ff060fa3823c054113885b2472173",
-                "sha256:975cbdeb016c3f14ad44f4919260e279918fba08c4bb3d7172ae4bf1aa612292",
-                "sha256:62e3884a1d7824f20a172ae2861aab50b1802989e85a971f9dfaf61444226856",
-                "sha256:9e6681a4b1e46936dbcc56ac213f61633979f6f348319658431181ffc3c1936c",
-                "sha256:e43641ac5bbfc8a0d37fb8b78657f664856fe83b1ab7acf298f57780e6fbf2de",
-                "sha256:cceb8439975ea508ffd19a312d7ff83149ab81d7e8a88685852bbea4ded98736",
-                "sha256:bf51429bc11ab4561b5d124c08a5ee6476519d33b5970338586767563a02adc4",
-                "sha256:ee96a38a3ba3c53e1cdd8cc2af59d5f378b7992e63c54fba9605c963b209e814",
-                "sha256:233d66bfad2287c61434384ec315bbf37b2f551beda2e0d37a8c24a0f2ed3896"
+                "sha256:f2cd917568a84f77cf9ce1d187742b613bdc56d686a74eac9dea85c753b93c47",
+                "sha256:aa99f4ca738978eeea308a2c8a97fcac3cdbbb0080c9c8259c78af018abb95e9",
+                "sha256:f2ad6fa016b48f9779933590c9f59731b2f304991cd49af799f3456e6e3ed8bf",
+                "sha256:0b02de3fc68211c640947d8b7d1936ceacbddacb0556492c83fa8da87cf5213a",
+                "sha256:1e954402fb2e2dbcaa9a707cb019885da578b5b17e5a1919d8e0cdb5e01f9a29",
+                "sha256:88d2def224a763cbfa421ba63bdd42505c2a792abb7c640a2842a98a09e2344e",
+                "sha256:9a4440e4aa54ac686946293a3f6db1da9595a08752ecab9fedee286ede330445",
+                "sha256:ff80dd3b7e40d65dd0ba0311a09b524d4512b8921ec19c0c1287469fc42eecd2",
+                "sha256:082b64b2399076941d89cd234fbd0a64298282ea3b7039eddc85e9054a4e3d0e",
+                "sha256:35c1f26b90abbb1756b7da26f30bef93c3fac0bea0c6110766aff2640bd957d5",
+                "sha256:1257ff741bc7238329da5c48cee4e2def142e788084977416706e180dc3a65a7",
+                "sha256:4f1e893fecce5dbacb2a6488d3680229c0027406e4b435b0814ef224ae9189fd"
             ],
-            "version": "==1.4.1"
+            "version": "==1.5.0"
         },
         "tensorflow-tensorboard": {
             "hashes": [
-                "sha256:4ff1c16faa8189c921b57ccb5f05ea1e19c276d59de7dcae3d846a6267a132d0",
-                "sha256:6684571c711e07b3aae25dd91cb4b106738d71acfce385b9d359ab14374ac518"
+                "sha256:663986f43e3283cd08f6feb8a2dede39fb2ca53d992b15b5c50858592a03f72f",
+                "sha256:4157520a6f72e40d50509e31231394f2fed4022400dd2763d1f2d0edc86b47cf"
             ],
-            "version": "==0.4.0"
+            "version": "==1.5.0"
         },
         "werkzeug": {
             "hashes": [
