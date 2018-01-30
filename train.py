@@ -63,10 +63,11 @@ def main():
     train_summary_dir = './logs/1'
 
     process_id = os.getenv('SLURM_PROCID')
-    if process_id == 0:
+    print("process id: " + str(process_id))
+    if process_id == '0':
         label = 'age'
         print("Slurm: Train age model")
-    elif process_id == 1:
+    elif process_id == '1':
         label = 'accent'
         print("Slurm: Train accent model")
 
