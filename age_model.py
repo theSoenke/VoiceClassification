@@ -15,7 +15,6 @@ def train(summary_dir, steps, samples):
 
     x_train, y_train, x_test, y_test = train_model.load_data("age", samples, 500)
     y_train = tf.one_hot(y_train, num_classes)
-    x_test = x_test.reshape((-1, time_steps, feature_size))
     y_test = tf.one_hot(y_test, num_classes)
 
     x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, learning_rate)
@@ -57,5 +56,5 @@ def train(summary_dir, steps, samples):
 
         saver.save(sess, './models/model-age.ckpt')
 
-        print("\n Accent Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train.eval()}))
+        print("\nAccent Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train.eval()}))
         print("Accent Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test.eval()}))

@@ -16,7 +16,7 @@ def load_data(classifier, samples, samples_test):
     y_train = np.load(classifier + "-classes-train.npy")
     x_test = np.load(classifier + "-features-test.npy")
     y_test = np.load(classifier + "-classes-test.npy")
-    return x_train[:samples], y_train[:samples], x_test[:samples_test], y_test[:samples]
+    return x_train[:samples], y_train[:samples], x_test[:samples_test], y_test[:samples_test]
 
 
 def RNN(x, time_steps, num_hidden, num_classes):

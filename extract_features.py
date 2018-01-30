@@ -65,19 +65,19 @@ def extract_gender(base_path, classifier, time_series_length, features_size, hop
 
 def extract_age(base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare age train set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", -1)
+    tracks, labels, target_classes = age_data.prepare(base_path, "cv-valid-train.csv", -1)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
     print("Prepare age test set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 1000)
+    tracks, labels, target_classes = age_data.prepare(base_path, "cv-valid-test.csv", 1000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "test")
 
 
 def extract_accent(base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare accent train set")
-    tracks, labels, target_classes = accent_data.prepare(base_path, "cv-valid-train.csv", 1000)
+    tracks, labels, target_classes = accent_data.prepare(base_path, "cv-valid-train.csv", -1)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
@@ -97,8 +97,8 @@ def main():
     hop_length = 128
     features_size = 13
 
-    # extract_gender(base_path, "gender", time_series_length, features_size, hop_length)
-    # extract_age(base_path, "age", time_series_length, features_size, hop_length)
+    extract_gender(base_path, "gender", time_series_length, features_size, hop_length)
+    extract_age(base_path, "age", time_series_length, features_size, hop_length)
     extract_accent(base_path, "accent", time_series_length, features_size, hop_length)
 
 

@@ -15,7 +15,6 @@ def train(summary_dir, steps, samples):
 
     x_train, y_train, x_test, y_test = train_model.load_data("accent", samples, 500)
     y_train = tf.one_hot(y_train, num_classes)
-    x_test = x_test.reshape((-1, time_steps, feature_size))
     y_test = tf.one_hot(y_test, num_classes)
 
     x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, learning_rate)
