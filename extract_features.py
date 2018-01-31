@@ -10,6 +10,8 @@ import accent_data as accent_data
 
 
 def track_features(path, time_series_length, features_size, hop_length, index):
+    print("Extracting ", path)
+
     y, sr = librosa.load(path)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=hop_length, n_mfcc=13)
     # spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)
@@ -31,7 +33,6 @@ def extract(base_path, track_paths, labels, target_classes, time_series_length, 
     with concurrent.futures.ProcessPoolExecutor(8) as executor:
         for i, track in enumerate(track_paths):
             classes.append(target_classes[labels[i]])
-            print("Extracting ", track)
             future = executor.submit(track_features, os.path.join(base_path, track), time_series_length, features_size, hop_length, i)
             futures.append(future)
         for future in concurrent.futures.as_completed(futures):

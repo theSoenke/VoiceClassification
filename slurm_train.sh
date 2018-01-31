@@ -28,7 +28,6 @@ echo "Hello World! I am $(hostname -s) greeting you!"
 echo "Also, my current TMPDIR: $TMPDIR"
 
 echo "nvidia-smi:"
-
 srun bash -c 'nvidia-smi'
 
 # Let's pretend our started processes are working on a
@@ -44,4 +43,4 @@ srun bash -c 'echo "process $SLURM_PROCID \
 parameter set $PARAMETER_SET"'
 
 srun bash -c 'CUDA_VISIBLE_DEVICES=$SLURM_PROCID LD_LIBRARY_PATH=/sw/compiler/cuda-8.0.44/lib64:$HOME/cuda/lib64/ \
-python3 $WORK/VoiceClassification/train.py --steps 150 --samples 5000'
+python3 $WORK/VoiceClassification/train.py --steps 100 --samples 3000'

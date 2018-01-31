@@ -56,5 +56,5 @@ def train(summary_dir, steps, samples):
 
         saver.save(sess, './models/model-age.ckpt')
 
-        print("\nAccent Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train.eval()}))
-        print("Accent Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test.eval()}))
+        print("\Age Train Accuracy: ", sess.run(accuracy, feed_dict={x: x_train, y: y_train.eval()}))
+        print("Age Test Accuracy: ", sess.run(accuracy, feed_dict={x: x_test, y: y_test.eval()}))
