@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 from keras.utils import np_utils
 import tensorflow as tf
@@ -53,6 +54,7 @@ def train(summary_dir, steps, samples):
 
             print("Loss: ", total_loss / total_steps)
             print("Accuracy: ", total_accuracy / total_steps)
+            sys.stdout.flush()
 
         saver.save(sess, './models/model-age.ckpt')
 

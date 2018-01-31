@@ -53,6 +53,7 @@ def train(summary_dir, steps, samples):
 
             print("Loss: ", total_loss / total_steps)
             print("Accuracy: ", total_accuracy / total_steps)
+            sys.stdout.flush()
 
         saver.save(sess, './models/model-accent.ckpt')
 
