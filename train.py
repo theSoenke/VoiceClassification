@@ -31,7 +31,7 @@ def RNN(x, time_steps, num_hidden, num_classes):
     return tf.matmul(outputs[-1], w) + b
 
 
-def build_graph(feature_size, time_steps, num_classes, learning_rate):
+def build_graph(feature_size, time_steps, num_classes, class_weights, learning_rate):
     num_hidden = 128
     x = tf.placeholder("float", [None, time_steps, feature_size])
     y = tf.placeholder("float", [None, num_classes])
@@ -39,7 +39,10 @@ def build_graph(feature_size, time_steps, num_classes, learning_rate):
     logits = RNN(x, time_steps, num_hidden, num_classes)
     prediction = tf.nn.softmax(logits)
 
-    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
+    weight_per_label = tf.transpose(tf.matmul(y, tf.transpose(class_weights)))
+    scaled_error = tf.multiply(weight_per_label, tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y))
+    error = tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y)
+    loss = tf.reduce_mean(scaled_error)
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
     correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))

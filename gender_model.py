@@ -14,13 +14,17 @@ def train(summary_dir, steps, samples):
     learning_rate = 0.001
     training_steps = steps
 
-    x_train, y_train, x_test, y_test = load_data("gender", samples, 500)
+    x_train, y_train, x_test, y_test = load_data("gender", samples, int(samples / 5))
+    _, counts = np.unique(y_train, return_counts=True)
+
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
     x_test = x_test.reshape((-1, time_steps, feature_size))
     y_test = y_test.reshape((-1, num_classes))
 
-    x, y, loss, accuracy, optimizer, summary_op = build_graph(feature_size, time_steps, num_classes, learning_rate)
+    normed_weights = [1 - (float(i)/sum(counts)) for i in counts]
+    class_weights = tf.constant([normed_weights])
+    x, y, loss, accuracy, optimizer, summary_op = build_graph(feature_size, time_steps, num_classes, class_weights, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:

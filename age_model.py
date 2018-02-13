@@ -9,16 +9,23 @@ import train as train_model
 
 def train(summary_dir, steps, samples):
     time_steps = 128
-    num_classes = 8
+    num_classes = 7
     feature_size = 13
     learning_rate = 0.001
     training_steps = steps
 
-    x_train, y_train, x_test, y_test = train_model.load_data("age", samples, 500)
+    x_train, y_train, x_test, y_test = train_model.load_data("age", samples, int(samples / 5))
+    _, counts = np.unique(y_train, return_counts=True)
+    if len(counts) < num_classes:
+        print("Samples only contain " + str(len(counts)) + " classes instead of required " + str(num_classes) + " Try to use more samples")
+        sys.exit(1)
+
     y_train = tf.one_hot(y_train, num_classes)
     y_test = tf.one_hot(y_test, num_classes)
 
-    x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, learning_rate)
+    normed_weights = [1 - (float(i)/sum(counts)) for i in counts]
+    class_weights = tf.constant([normed_weights])
+    x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, class_weights, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
