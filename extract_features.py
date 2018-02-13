@@ -54,19 +54,19 @@ def save(features, classes, classifier, set):
 
 def extract_gender(base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare gender train set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", 10000)
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-train.csv", -1)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
     print("Prepare gender test set")
-    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 10000)
+    tracks, labels, target_classes = gender_data.prepare(base_path, "cv-valid-test.csv", 1000)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "test")
 
 
 def extract_age(base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare age train set")
-    tracks, labels, target_classes = age_data.prepare(base_path, "cv-valid-train.csv", 10000)
+    tracks, labels, target_classes = age_data.prepare(base_path, "cv-valid-train.csv", -1)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
@@ -78,7 +78,7 @@ def extract_age(base_path, classifier, time_series_length, features_size, hop_le
 
 def extract_accent(base_path, classifier, time_series_length, features_size, hop_length):
     print("Prepare accent train set")
-    tracks, labels, target_classes = accent_data.prepare(base_path, "cv-valid-train.csv", 10000)
+    tracks, labels, target_classes = accent_data.prepare(base_path, "cv-valid-train.csv", -1)
     features, labels = extract(base_path, tracks, labels, target_classes, time_series_length, features_size, hop_length)
     save(features, labels, classifier, "train")
 
