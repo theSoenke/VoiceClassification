@@ -23,7 +23,9 @@ def train(summary_dir, steps, samples):
     y_train = tf.one_hot(y_train, num_classes)
     y_test = tf.one_hot(y_test, num_classes)
 
-    normed_weights = [1 - (float(i)/sum(counts)) for i in counts]
+    counts_inverse = [samples - i for i in counts]
+    normed_weights = [(float(i)/sum(counts_inverse)) for i in counts_inverse]
+    print(normed_weights)
     class_weights = tf.constant([normed_weights])
     x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, class_weights, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))

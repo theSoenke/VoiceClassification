@@ -11,16 +11,17 @@ target_classes = {
     "fourties": 3,
     "fifties": 4,
     "sixties": 5,
-    "seventies": 6,
-    "eighties": 7
+    "seventies": 6
 }
 
 
 def prepare(base_path, csv, samples):
-    column_name = "age"
+    column_name = 'age'
     colums = ['filename', column_name]
     data = pd.read_csv(os.path.join(base_path, csv), usecols=colums)
     data = data[data[column_name].notnull()]
+    data = data[data[column_name] != 'eighties'] # not enough samples
+    data = data[data[column_name] != 'nineties']
     tracks = data['filename'].tolist()[:samples]
     labels = data[column_name].tolist()[:samples]
 

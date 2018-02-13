@@ -14,11 +14,16 @@ def train(summary_dir, steps, samples):
     learning_rate = 0.001
     training_steps = steps
 
-    x_train, y_train, x_test, y_test = train_model.load_data("accent", samples, 500)
+    x_train, y_train, x_test, y_test = train_model.load_data("accent", samples, int(samples / 5))
+    _, counts = np.unique(y_train, return_counts=True)
     y_train = tf.one_hot(y_train, num_classes)
     y_test = tf.one_hot(y_test, num_classes)
 
-    x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, learning_rate)
+    counts_inverse = [samples - i for i in counts]
+    normed_weights = [(float(i)/sum(counts_inverse)) for i in counts_inverse]
+    print(normed_weights)
+    class_weights = tf.constant([normed_weights])
+    x, y, loss, accuracy, optimizer, summary_op = train_model.build_graph(feature_size, time_steps, num_classes, class_weights, learning_rate)
     train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 
     with tf.Session() as sess:
